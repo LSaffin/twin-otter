@@ -1,0 +1,23 @@
+name: twinotter
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.5
+  - pip
+  - xarray
+  - numpy
+  - matplotlib
+  - pandas
+  - metpy>=1.0
+  - cartopy
+  - tqdm
+  - cftime
+  - docopt
+  - netcdf4
+  - pyyaml
+  - sphinx
+  - sphinx_rtd_theme
+  - m2r2
+  - pip:
+    - parse
+    - worldview_dl
