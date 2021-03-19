@@ -21,3 +21,4 @@ dependencies:
   - pip:
     - parse
     - worldview_dl
+    - .
