@@ -38,7 +38,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
-    "m2r",
+    "m2r2",
 ]
 
 intersphinx_mapping = {
