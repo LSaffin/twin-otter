@@ -47,6 +47,7 @@ def test_count_segments(testdata):
     flight_segments = twinotter.load_segments(testdata["flight_segments_file"])
     assert twinotter.count_segments(flight_segments, "level") == 10
     assert twinotter.count_segments(flight_segments, "profile") == 7
+    assert twinotter.count_segments(flight_segments, "calibration") == 17
 
 
 def test_extract_segments(testdata):

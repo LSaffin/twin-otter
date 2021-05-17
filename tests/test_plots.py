@@ -63,21 +63,26 @@ def test_quicklook_plot(mock_savefig, testdata):
         flight_segments_file=testdata["flight_segments_file"],
     )
 
-    with open(testdata["flight_segments_file"]) as fh:
-        file_content = fh.read()
-        n_levels = len(file_content.split("level")) - 1
-        n_profiles = len(file_content.split("profile")) - 1
+    flight_segments = twinotter.load_segments(testdata["flight_segments_file"])
 
-    for n in range(n_levels):
-        fn_fig = "flight330_level{}_quicklook.png".format(n)
-        mock_savefig.assert_any_call(fn_fig)
+    for seg in flight_segments["segments"]:
+        seg_id = seg["segment_id"]
+        if "level" in seg["kinds"]:
+            for figname in ["quicklook", "paluch"]:
+                target_filename = "{}_{}.png".format(seg_id, figname)
+                mock_savefig.assert_any_call(target_filename)
+        if "profile" in seg["kinds"]:
+            for figname in ["skewt", "rh_0-4km", "theta_0-4km"]:
+                target_filename = "{}_{}.png".format(seg_id, figname)
+                mock_savefig.assert_any_call(target_filename)
 
-        fn_fig = "flight330_level{}_paluch.png".format(n)
-        mock_savefig.assert_any_call(fn_fig)
+    for figname in ["quicklook", "paluch"]:
+        target_filename = "{}_{}.png".format("TO-330_overview", figname)
+        mock_savefig.assert_any_call(target_filename)
 
-    for n in range(n_profiles):
-        fn_fig = "flight330_profile{}_skewt.png".format(n)
-        mock_savefig.assert_any_call(fn_fig)
+    for figname in ["skewt", "rh_0-4km", "theta_0-4km"]:
+        target_filename = "{}_{}.png".format("TO-330_profiles", figname)
+        mock_savefig.assert_any_call(target_filename)
 
 
 # this doesn't run properly because of the gui needing to be opened

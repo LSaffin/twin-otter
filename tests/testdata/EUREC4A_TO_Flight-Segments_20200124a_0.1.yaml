@@ -1,7 +1,7 @@
 name: RF01
 mission: EUREC4A
 platform: TO
-flight_id: TO-0330
+flight_id: TO-330
 contacts: []
 date: 2020-01-24
 flight_report: ''
@@ -9,42 +9,48 @@ takeoff: 2020-01-24 11:06:37
 landing: 2020-01-24 14:02:53
 events: []
 remarks:
+- Calibration flight
 - HUM_ROSE is not well calibrated to absolute values - reference against TDEW_BUCK
   or H2O_LICOR.
 segments:
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_a
   start: 2020-01-24 11:25:13
   end: 2020-01-24 11:34:58
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_b
   start: 2020-01-24 11:34:58
   end: 2020-01-24 11:45:28
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_c
   start: 2020-01-24 11:45:28
   end: 2020-01-24 11:50:21
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_d
   start: 2020-01-24 11:50:21
   end: 2020-01-24 12:01:37
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_e
   start: 2020-01-24 12:02:44
   end: 2020-01-24 12:18:52
 - kinds:
@@ -52,83 +58,94 @@ segments:
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_f
   start: 2020-01-24 12:17:45
   end: 2020-01-24 12:27:53
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_g
   start: 2020-01-24 12:28:15
   end: 2020-01-24 12:42:53
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_h
   start: 2020-01-24 12:47:24
   end: 2020-01-24 12:54:09
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_i
   start: 2020-01-24 12:56:46
   end: 2020-01-24 13:06:09
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_j
   start: 2020-01-24 13:06:09
   end: 2020-01-24 13:08:24
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_k
   start: 2020-01-24 13:08:47
   end: 2020-01-24 13:12:32
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_l
   start: 2020-01-24 13:17:47
   end: 2020-01-24 13:29:03
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_m
   start: 2020-01-24 13:32:03
   end: 2020-01-24 13:36:11
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_n
   start: 2020-01-24 13:36:33
   end: 2020-01-24 13:43:41
 - kinds:
+  - calibration
   - profile
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_o
   start: 2020-01-24 13:44:03
   end: 2020-01-24 13:47:26
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_p
   start: 2020-01-24 13:47:49
   end: 2020-01-24 13:56:04
 - kinds:
+  - calibration
   - level
   name: ''
   irregularities: []
-  segment_id: TO-0330_
+  segment_id: TO-330_q
   start: 2020-01-24 13:59:27
   end: 2020-01-24 14:01:42
