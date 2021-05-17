@@ -130,7 +130,7 @@ def load_segments(filename):
     return segments
 
 
-def _matching_segments(segments, segment_type):
+def matching_segments(segments, segment_type):
     return [seg for seg in segments["segments"] if segment_type in seg["kinds"]]
 
 
@@ -145,7 +145,7 @@ def count_segments(segments, segment_type):
         int:
 
     """
-    return len(_matching_segments(segments, segment_type))
+    return len(matching_segments(segments, segment_type))
 
 
 def extract_segments(ds, segments, segment_type, segment_idx=None, dim="Time"):
@@ -164,18 +164,18 @@ def extract_segments(ds, segments, segment_type, segment_idx=None, dim="Time"):
 
     """
     # All segments of the requested type
-    matching_segments = _matching_segments(segments, segment_type)
+    segments_subset = matching_segments(segments, segment_type)
 
     # If a single index is requested return that index of legs with the requested type
     if segment_idx is not None:
-        segment = matching_segments[segment_idx]
+        segment = segments_subset[segment_idx]
         return ds.sel(**{dim: slice(segment["start"], segment["end"])})
 
     # Otherwise merge all legs with the requested type
     else:
         ds_matching = []
-        for segment in matching_segments:
-            ds_matching.append(ds.sel(**{dim:slice(segment["start"], segment["end"])}))
+        for segment in segments_subset:
+            ds_matching.append(ds.sel(**{dim: slice(segment["start"], segment["end"])}))
 
         return xr.concat(ds_matching, dim=dim)
 

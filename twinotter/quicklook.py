@@ -10,15 +10,13 @@ Usage::
 
 """
 
-from pathlib import Path
-
-import numpy as np
+import xarray as xr
 import matplotlib.pyplot as plt
 import scipy.constants
 import metpy.calc
 from metpy.units import units
 
-from . import load_flight, load_segments, count_segments, extract_segments, derive
+from . import load_flight, load_segments, matching_segments, extract_segments, derive
 from .plots import vertical_profile
 
 
@@ -45,7 +43,7 @@ def generate(flight_data_path, flight_segments_file):
 
     # Quicklook plots for the full flight
     figures = plot_level(ds)
-    savefigs(figures, ds.attrs["flight_number"], "", "")
+    savefigs(figures, "{}_overview".format(flight_segments["flight_id"]))
 
     plot_individual_phases(ds, flight_segments, "level", plot_level)
     plot_individual_phases(ds, flight_segments, "profile", plot_profile)
@@ -53,14 +51,20 @@ def generate(flight_data_path, flight_segments_file):
     # Make a combined plot of all profiles
     profiles = extract_segments(ds, flight_segments, "profile")
     figures = plot_profile(profiles)
-    savefigs(figures, ds.attrs["flight_number"], "profile", "_combined")
+    savefigs(figures, "{}_profiles".format(flight_segments["flight_id"]))
 
 
 def plot_individual_phases(ds, flight_segments, segment_type, plot_func):
-    for n in range(count_segments(flight_segments, segment_type)):
-        ds_section = extract_segments(ds, flight_segments, segment_type, n)
-        figures = plot_func(ds_section)
-        savefigs(figures, ds.attrs["flight_number"], segment_type, n)
+    segments = matching_segments(flight_segments, segment_type)
+    for seg in segments:
+        ds_sub = ds.sel(Time=slice(seg["start"], seg["end"]))
+
+        figures = plot_func(ds_sub)
+        for fig, figname in figures:
+            fig.suptitle(
+                "{}: {} {}".format(flight_segments["flight_id"], seg["name"], figname)
+            )
+        savefigs(figures, seg["segment_id"])
 
 
 def plot_level(ds):
@@ -147,7 +151,6 @@ def plot_profile(dataset):
     plt.ylim(0, 4000)
     plt.xlabel("Potential Temperature (K)")
     plt.ylabel("Altitude (m)")
-    plt.title("Flight {}".format(dataset.attrs["flight_number"]))
 
     rh = metpy.calc.relative_humidity_from_dewpoint(T * units("K"), Td * units("K"))
     fig3 = plt.figure()
@@ -156,14 +159,13 @@ def plot_profile(dataset):
     plt.ylim(0, 4000)
     plt.xlabel("Relative Humidity")
     plt.ylabel("Altitude (m)")
-    plt.title("Flight {}".format(dataset.attrs["flight_number"]))
 
     return [(fig1, "skewt"), (fig2, "theta_0-4km"), (fig3, "rh_0-4km")]
 
 
-def savefigs(figures, flight_number, label, n):
+def savefigs(figures, label):
     for fig, figname in figures:
-        fn = "flight{}_{}{}_{}.png".format(flight_number, label, n, figname)
+        fn = "{}_{}.png".format(label, figname)
         print(fn)
         fig.savefig(fn)
         plt.close(fig)
