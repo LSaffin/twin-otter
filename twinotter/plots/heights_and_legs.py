@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from tqdm import tqdm
+from adjustText import adjust_text
 import matplotlib.pyplot as plt
 
 from .. import load_flight, load_segments
@@ -36,14 +37,11 @@ def generate(flight_data_path, flight_segments_file, show_gui=False, output_path
 
     # Produce the basic time-height plot
     fig, ax1 = plt.subplots()
-    ax2 = ax1.twinx()
     ax1.plot(ds.Time, ds.ALT_OXTS / 1000, color="k", alpha=0.5)
     ax1.set_ylabel("Altitude (km)")
 
-    ax2.plot(ds.Time, ds.ROLL_OXTS, color="k", linestyle="--", alpha=0.1)
-    ax2.set_ylabel("Roll Angle")
-
     # For each segment overlay a coloured line onto the time-height plot
+    texts = []
     for segment in tqdm(segments["segments"]):
         ds_section = ds.sel(Time=slice(segment["start"], segment["end"]))
         label = segment["kinds"][0]
@@ -69,6 +67,15 @@ def generate(flight_data_path, flight_segments_file, show_gui=False, output_path
             alpha=0.75,
         )
 
+        texts.append(
+            ax1.text(
+                ds_section.Time[0],
+                ds_section.ALT_OXTS[0] / 1000,
+                segment["segment_id"][7:],
+                color=color,
+            )
+        )
+
     if hasattr(ax1, "secondary_yaxis"):
         # `ax.secondary_yaxis` was added in matplotlib v3.1
         ax1_fl = ax1.secondary_yaxis(
@@ -79,6 +86,8 @@ def generate(flight_data_path, flight_segments_file, show_gui=False, output_path
     for label in ax1.get_xmajorticklabels():
         label.set_rotation(30)
         label.set_horizontalalignment("right")
+
+    adjust_text(texts)
 
     if show_gui:
         plt.show()
