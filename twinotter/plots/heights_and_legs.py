@@ -2,6 +2,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 from adjustText import adjust_text
+import xarray as xr
 import matplotlib.pyplot as plt
 
 from .. import load_flight, load_segments
@@ -37,26 +38,14 @@ def generate(flight_data_path, flight_segments_file, show_gui=False, output_path
 
     # Produce the basic time-height plot
     fig, ax1 = plt.subplots()
-    ax1.plot(ds.Time, ds.ALT_OXTS / 1000, color="k", alpha=0.5)
+    ax1.plot(ds.Time, ds.ALT_OXTS / 1000, color="k")
     ax1.set_ylabel("Altitude (km)")
 
     # For each segment overlay a coloured line onto the time-height plot
     texts = []
     for segment in tqdm(segments["segments"]):
         ds_section = ds.sel(Time=slice(segment["start"], segment["end"]))
-        label = segment["kinds"][0]
-
-        linestyle = "-"
-        try:
-            color = colors[label]
-        except KeyError:
-            # If the primary segment type doesn't have an assigned colour but one of the
-            # other "kinds" matches then use that colour with a dashed line
-            color = "yellow"
-            linestyle = "--"
-            for segment_type in colors:
-                if segment_type in segment["kinds"]:
-                    color = colors[segment_type]
+        color, linestyle = segment_linstyle(segment)
 
         ax1.plot(
             ds_section.Time,
@@ -101,6 +90,37 @@ def generate(flight_data_path, flight_segments_file, show_gui=False, output_path
 
         output_path.parent.mkdir(exist_ok=True)
         plt.savefig(str(output_path), bbox_inches="tight")
+
+
+def segment_linstyle(seg):
+    if "calibration" in seg["kinds"]:
+        return "red", "--"
+    elif "bco_flyby" in seg["kinds"]:
+        return "red", "-"
+
+    elif "above_cloud" in seg["kinds"]:
+        return "orange", "--"
+    elif "cloud_base" in seg["kinds"]:
+        return "grey", "--"
+    elif "cloud" in seg["kinds"]:
+        return "grey", "-"
+
+    elif "cold_pool" in seg["kinds"]:
+        return "blue", "-"
+    elif "rain_shafts" in seg["kinds"]:
+        return "blue", "--"
+    elif "boundary_layer" in seg["kinds"]:
+        return "green", "-"
+
+    elif "sawtooth" in seg["kinds"]:
+        return "cyan", "--"
+
+    elif "transit" in seg["kinds"]:
+        return "red", ":"
+    elif "profile" in seg["kinds"]:
+        return "magenta", "--"
+    else:
+        return "brown", "-"
 
 
 if __name__ == "__main__":
