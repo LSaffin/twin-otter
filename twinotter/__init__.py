@@ -148,7 +148,7 @@ def count_segments(segments, segment_type):
     return len(_matching_segments(segments, segment_type))
 
 
-def extract_segments(ds, segments, segment_type, segment_idx=None):
+def extract_segments(ds, segments, segment_type, segment_idx=None, dim="Time"):
     """Extract a subset of the given dataset with the segments requested
 
     Args:
@@ -169,15 +169,15 @@ def extract_segments(ds, segments, segment_type, segment_idx=None):
     # If a single index is requested return that index of legs with the requested type
     if segment_idx is not None:
         segment = matching_segments[segment_idx]
-        return ds.sel(Time=slice(segment["start"], segment["end"]))
+        return ds.sel(**{dim: slice(segment["start"], segment["end"])})
 
     # Otherwise merge all legs with the requested type
     else:
         ds_matching = []
         for segment in matching_segments:
-            ds_matching.append(ds.sel(Time=slice(segment["start"], segment["end"])))
+            ds_matching.append(ds.sel(**{dim:slice(segment["start"], segment["end"])}))
 
-        return xr.concat(ds_matching, dim="Time")
+        return xr.concat(ds_matching, dim=dim)
 
 
 def generate_file_path(
