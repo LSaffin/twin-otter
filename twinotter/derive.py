@@ -51,6 +51,21 @@ def calculate(name, ds):
         raise ValueError("Can not calculate {} from dataset".format(name))
 
 
+def liquid_water_content(number, radius):
+
+    lwc = (4.0 * np.pi / 3.0) * constants.density_water * sum(number * radius**3)
+
+    # Check units
+    # water density is kg/m^3
+    # Number is /cm^3
+    # Radius is um
+
+    # (1e-6)^3 / (1e-2)^3 = 1e-9
+    # For g m-3
+
+    return lwc * 1e-9
+
+
 def specific_humidity(dataset):
 
     x_h20 = dataset.H2O_LICOR
