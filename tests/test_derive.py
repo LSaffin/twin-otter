@@ -1,6 +1,7 @@
 import pytest
 
 import numpy as np
+import xarray as xr
 
 import twinotter
 import twinotter.derive
@@ -45,9 +46,21 @@ def test_calculate_equivalent(testdata, variable, function, arguments):
     result1 = _filter_nans(result1)
     result2 = _filter_nans(result2)
 
+    assert isinstance(result1, xr.core.dataarray.DataArray)
+    assert isinstance(result2, xr.core.dataarray.DataArray)
+
     assert (result1 == result2).all()
 
 
 def _filter_nans(array):
     # NaNs mess up array-wise equality checks
     return array.where(~np.isnan(array), drop=True)
+
+
+def test_liquid_water_content(testdata):
+    ds = xr.open_dataset(testdata["flight_microphysics_file"])
+    lwc = twinotter.derive.liquid_water_content(
+        ds.ambient_particle_number_per_channel, ds.ambient_particle_diameter / 2
+    )
+
+    assert isinstance(lwc, xr.core.dataarray.DataArray)

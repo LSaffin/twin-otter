@@ -52,14 +52,16 @@ def calculate(name, ds):
 
 
 def liquid_water_content(number, radius):
+    lwc = (4.0 * np.pi / 3.0) * constants.density_water.magnitude * number * radius**3
 
-    lwc = (4.0 * np.pi / 3.0) * constants.density_water * sum(number * radius**3)
+    # Sum across all instrument bins
+    axis = number.dims.index("index")
+    lwc = np.sum(lwc, axis=axis)
 
     # Check units
     # water density is kg/m^3
     # Number is /cm^3
     # Radius is um
-
     # (1e-6)^3 / (1e-2)^3 = 1e-9
     # For g m-3
 

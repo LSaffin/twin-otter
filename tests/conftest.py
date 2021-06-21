@@ -76,6 +76,9 @@ def testdata(scope="session"):
         flight_segments_file=str(
             testdata_dir / "EUREC4A_TO_Flight-Segments_20200124a_0.1.yaml"
         ),
+        flight_microphysics_file=str(
+            testdata_dir / "to330_ffssp_r1.nc"
+        ),
         goes_path=str(p_root / "goes"),
         goes_time=datetime.datetime(
             year=2020,
