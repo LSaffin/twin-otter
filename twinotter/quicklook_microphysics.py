@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 
 from . import MICROPHYSICS_FORMAT, load_segments, matching_segments
 from .quicklook import savefigs
+from . import derive
 
 
 def main():
@@ -61,6 +62,8 @@ def generate(flight_data_path, flight_segments_file):
     plot_individual_phases(datasets, flight_segments, "level", plot_microphysics)
     plot_individual_phases(datasets, flight_segments, "profile", plot_microphysics)
 
+    plot_with_phases(datasets, flight_segments, "cloud", plot_lwc_violin)
+
 
 def plot_individual_phases(datasets, flight_segments, segment_type, plot_func):
     segments = matching_segments(flight_segments, segment_type)
@@ -79,6 +82,27 @@ def plot_individual_phases(datasets, flight_segments, segment_type, plot_func):
                 "{}: {} {}".format(flight_segments["flight_id"], seg["name"], figname)
             )
         savefigs(figures, seg["segment_id"])
+
+
+def plot_with_phases(datasets, flight_segments, segment_type, plot_func):
+    segments = matching_segments(flight_segments, segment_type)
+    for instrument in datasets:
+        ds = datasets[instrument]
+        for seg in segments:
+            ds_seg = ds.sel(time=slice(seg["start"], seg["end"]))
+            if len(ds_seg.time) > 0:
+                try:
+                    plot_func(ds_seg, seg)
+                except ValueError:
+                    pass
+
+        plt.xlabel("Liquid water content (g m$^{-3}$)")
+        plt.ylabel("Altitude (km)")
+        plt.title(instrument)
+        plt.savefig("{}_{}_lwc_distributions.png".format(
+            flight_segments["flight_id"], instrument
+        ))
+        plt.close()
 
 
 def plot_microphysics(datasets):
@@ -114,6 +138,18 @@ def plot_microphysics(datasets):
     figures.append([fig, "microphysics"])
 
     return figures
+
+
+def plot_lwc_violin(ds, seg, lwc_threshold=0.1, dz_violin=0.25):
+    z = ds.altitude.mean().values[()] / 1e3
+    lwc = derive.liquid_water_content(
+        ds.ambient_particle_number_per_channel,
+        ds.ambient_particle_diameter / 2
+    ).values
+    lwc = np.ma.masked_where(lwc < lwc_threshold, lwc).compressed()
+
+    plt.violinplot(lwc, positions=[z], vert=False, widths=dz_violin)
+    plt.text(lwc.max(), z, seg["segment_id"][7:])
 
 
 if __name__ == "__main__":
