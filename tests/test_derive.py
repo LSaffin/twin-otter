@@ -67,14 +67,26 @@ def test_liquid_water_content(testdata):
     assert isinstance(lwc, xr.core.dataarray.DataArray)
 
 
-def test_adiabatic_liquid_water_content(testdata):
+@pytest.mark.parametrize(
+    "qsat_method",
+    [
+        ("goff-gratch"),
+        ("teten"),
+        ("bolton"),
+        ("lowe-ficke"),
+    ],
+)
+def test_adiabatic_liquid_water_content(testdata, qsat_method):
     ds = twinotter.load_flight(testdata["flight_data_file"])
     segs = twinotter.load_segments(testdata["flight_segments_file"])
 
     # Lowest level leg in flight 330
     ds_bl = twinotter.extract_segments(ds, segs, "level", segment_idx=3)
 
-    t, alwc, thetaq = twinotter.trev.trev(ds_bl.PS_AIR*100, ds_bl.TAT_ND_R, 80000)
+    t, alwc, thetaq = twinotter.trev.trev(
+        ds_bl.PS_AIR*100, ds_bl.TAT_ND_R, 80000, qsat_method=qsat_method
+    )
 
+    print(qsat_method, alwc.min(), alwc.max())
     assert alwc.min() > 3.65
     assert alwc.max() < 3.84
