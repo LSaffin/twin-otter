@@ -19,7 +19,7 @@ requirements = [
     "docopt",
     "netcdf4",
     "pyyaml",
-    "adjust_text",
+    "adjustText",
 ]
 
 setup_requirements = []
