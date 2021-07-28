@@ -1,18 +1,5 @@
 import numpy as np
-
-A = 17.269
-B = 35.86
-C = 610.78
-D = 273.16
-K = 17.67
-KK = 243.5
-A0 = 6.107799961
-A1 = 4.436518521e-1
-A2 = 1.428945805e-2
-A3 = 2.650648471e-4
-A4 = 3.031240396e-6
-A5 = 2.034080948e-8
-A6 = 6.136820929e-11
+from .derive import saturation_vapor_pressure
 
 
 def trev(cloud_base_pressure, temperature, pressure, qsat_method="goff-gratch"):
@@ -84,47 +71,3 @@ def trev(cloud_base_pressure, temperature, pressure, qsat_method="goff-gratch"):
     alwc = tw * pressure * 28.9644 / (8.314e7 * t1) * 1.0e7
 
     return t, alwc, thetaq
-
-
-# goff-gratch formula for water saturation vapour pressure
-def vapor(tfp):
-    t = tfp
-    e = (
-        -7.90298 * (373.16 / t - 1.0)
-        + 5.02808 * np.log10(373.16 / t)
-        - 1.3816e-7 * (10.0 ** (11.344 * (1.0 - t / 373.16)) - 1.0)
-        + 8.1328e-3 * (10.0 ** (3.49149 * (1.0 - 373.16 / t)) - 1.0)
-    )
-    es = 1013.246 * 10.0 ** e
-    satr = 100.0 * es
-
-    return satr
-
-
-# teten's formula for water saturation vapor pressure
-def teten(t):
-    return C * np.exp(A * (t - D) / (t - B))
-
-
-# Bolton's formula for water saturation (Bolton, Mon. Weather Rev, 1980)
-def bolton(temperature):
-    t = temperature - 273.15
-    return 611.2 * np.exp(K * t / (t + KK))
-
-
-# Lowe and Ficke's formula for saturation (see Pruppacher & Klett, p625)
-def lf(temperature):
-    t = temperature - 273.15
-    return 100.0 * (A0 + t * (A1 + t * (A2 + t * (A3 + t * (A4 + t * (A5 + A6 * t))))))
-
-
-qsat_methods = {
-    "goff-gratch": vapor,
-    "teten": teten,
-    "bolton": bolton,
-    "lowe-ficke": lf,
-}
-
-
-def saturation_vapor_pressure(temperature, method="goff-gratch"):
-    return qsat_methods[method.lower()](temperature)
