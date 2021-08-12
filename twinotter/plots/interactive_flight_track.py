@@ -48,8 +48,6 @@ def main():
     app.mainloop()
     root.destroy()
 
-    return
-
 
 class FlightPhaseGenerator(tkinter.Frame):
     def __init__(self, ds, parent, *args, **kwargs):
@@ -170,8 +168,6 @@ class FlightPhaseGenerator(tkinter.Frame):
         )
 
         self.flight_information["segments"].sort(key=lambda x: x["start"])
-
-        return
 
 
 def flight_information(ds):

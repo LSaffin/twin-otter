@@ -36,8 +36,6 @@ def main():
         flight_segments_file=args.flight_segments_file,
     )
 
-    return
-
 
 def generate(flight_data_path, flight_segments_file):
     filenames = list(
@@ -99,9 +97,11 @@ def plot_with_phases(datasets, flight_segments, segment_type, plot_func):
         plt.xlabel("Liquid water content (g m$^{-3}$)")
         plt.ylabel("Altitude (km)")
         plt.title(instrument)
-        plt.savefig("{}_{}_lwc_distributions.png".format(
-            flight_segments["flight_id"], instrument
-        ))
+        plt.savefig(
+            "{}_{}_lwc_distributions.png".format(
+                flight_segments["flight_id"], instrument
+            )
+        )
         plt.close()
 
 
@@ -143,8 +143,7 @@ def plot_microphysics(datasets):
 def plot_lwc_violin(ds, seg, lwc_threshold=0.1, dz_violin=0.25):
     z = ds.altitude.mean().values[()] / 1e3
     lwc = derive.liquid_water_content(
-        ds.ambient_particle_number_per_channel,
-        ds.ambient_particle_diameter / 2
+        ds.ambient_particle_number_per_channel, ds.ambient_particle_diameter / 2
     ).values
     lwc = np.ma.masked_where(lwc < lwc_threshold, lwc).compressed()
 

@@ -84,7 +84,7 @@ def test_adiabatic_liquid_water_content(testdata, qsat_method):
     ds_bl = twinotter.extract_segments(ds, segs, "level", segment_idx=3)
 
     t, alwc, thetaq = twinotter.trev.trev(
-        ds_bl.PS_AIR*100, ds_bl.TAT_ND_R, 80000, qsat_method=qsat_method
+        ds_bl.PS_AIR * 100, ds_bl.TAT_ND_R, 80000, qsat_method=qsat_method
     )
 
     print(qsat_method, alwc.min(), alwc.max())

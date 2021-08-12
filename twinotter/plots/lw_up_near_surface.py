@@ -6,6 +6,7 @@ by looking at the near-surface upwelling long-wave radiation
 """
 if __name__ == "__main__":
     import matplotlib
+
     matplotlib.use("Agg")
 
 import cartopy.crs as ccrs
@@ -29,11 +30,14 @@ def main(flight_data_path, alt_max=100.0):
     da_lw_up = ds.LW_UP_C
 
     fig, axes = plt.subplots(
-        subplot_kw=dict(projection=ccrs.PlateCarree()), nrows=2,
-        figsize=(10, 12), sharey=True,
+        subplot_kw=dict(projection=ccrs.PlateCarree()),
+        nrows=2,
+        figsize=(10, 12),
+        sharey=True,
     )
+
     def _bootstrap(ax):
-        ax.coastlines(resolution='10m')
+        ax.coastlines(resolution="10m")
         twinotter.external.eurec4a.add_halo_circle(ax=ax)
         gl = ax.gridlines(draw_labels=True)
         gl.top_labels = False
@@ -60,12 +64,13 @@ def main(flight_data_path, alt_max=100.0):
 
 if __name__ == "__main__":
     import argparse
+
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('flight_data_path', nargs="+")
+    argparser.add_argument("flight_data_path", nargs="+")
 
     args = argparser.parse_args()
 
     for flight_data_path in tqdm(args.flight_data_path):
         fig, ds = main(flight_data_path=flight_data_path)
         fn = f"flight{ds.flight_number}__lw_up_surface.png"
-        plt.savefig(Path(flight_data_path)/"figures"/fn)
+        plt.savefig(Path(flight_data_path) / "figures" / fn)

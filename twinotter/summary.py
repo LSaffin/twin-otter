@@ -30,8 +30,6 @@ def main():
         flight_summary_path=args.flight_summary_path,
     )
 
-    return
-
 
 def generate(flight_data_path, flight_summary_path):
     # Get a list of netCDF files in the obs/ folder which match the expected
@@ -104,8 +102,6 @@ def generate(flight_data_path, flight_summary_path):
 
     # Overwrite the old csv
     flight_summary.to_csv(flight_summary_path, index=False)
-
-    return
 
 
 def extract_date(dataset):

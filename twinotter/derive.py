@@ -52,7 +52,7 @@ def calculate(name, ds):
 
 
 def liquid_water_content(number, radius):
-    lwc = (4.0 * np.pi / 3.0) * constants.density_water.magnitude * number * radius**3
+    lwc = (4.0 * np.pi / 3.0) * constants.density_water.magnitude * number * radius ** 3
 
     # Sum across all instrument bins
     axis = number.dims.index("index")
@@ -124,6 +124,8 @@ A = 17.269
 B = 35.86
 C = 610.78
 D = 273.16
+
+
 def teten(t):
     return C * np.exp(A * (t - D) / (t - B))
 
@@ -131,6 +133,8 @@ def teten(t):
 # Bolton's formula for water saturation (Bolton, Mon. Weather Rev, 1980)
 K = 17.67
 KK = 243.5
+
+
 def bolton(temperature):
     t = temperature - 273.15
     return 611.2 * np.exp(K * t / (t + KK))
@@ -144,6 +148,8 @@ A3 = 2.650648471e-4
 A4 = 3.031240396e-6
 A5 = 2.034080948e-8
 A6 = 6.136820929e-11
+
+
 def lf(temperature):
     t = temperature - 273.15
     return 100.0 * (A0 + t * (A1 + t * (A2 + t * (A3 + t * (A4 + t * (A5 + A6 * t))))))

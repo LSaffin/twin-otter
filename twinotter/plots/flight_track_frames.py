@@ -35,7 +35,6 @@ from ..external import eurec4a, goes
 
 def main():
     scripting.parse_docopt_arguments(generate, __doc__)
-    return
 
 
 def generate(

@@ -67,8 +67,6 @@ def add_features(ax):
     # Add HALO circle
     eurec4a.add_halo_circle(ax)
 
-    return
-
 
 if __name__ == "__main__":
     main()

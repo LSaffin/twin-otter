@@ -30,13 +30,10 @@ def test_load_flight(testdata, load_from, revision):
     # - https://stackoverflow.com/a/36001191/8270394
     assert pd.isnull(ds.Time.values).any() == False
 
-    return
-
 
 def test_load_flight_empty_fails(testdata_empty):
     with pytest.raises(FileNotFoundError):
         twinotter.load_flight(flight_data_path=testdata_empty["flight_data_path"])
-    return
 
 
 def test_load_segments(testdata):

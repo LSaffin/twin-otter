@@ -46,8 +46,6 @@ def flight_path(
         ax.text(ds.LON_OXTS[0], ds.LAT_OXTS[0], "S", transform=ccrs.PlateCarree())
         ax.text(ds.LON_OXTS[-1], ds.LAT_OXTS[-1], "F", transform=ccrs.PlateCarree())
 
-    return
-
 
 def flight_path_3d(ds, ax=None):
     if ax == None:
@@ -152,8 +150,6 @@ def add_land_and_sea(ax):
 
     ax.gridlines(linestyle="--", color="black", draw_labels=True)
 
-    return
-
 
 def add_flight_position(ax, dataset):
     ax.plot(
@@ -168,4 +164,3 @@ def add_flight_position(ax, dataset):
         marker=(3, 0, -float(dataset.HDG_OXTS)),
         color="red",
     )
-    return

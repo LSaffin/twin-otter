@@ -24,7 +24,6 @@ from ...util import scripting
 
 def main():
     scripting.parse_docopt_arguments(get_images, __doc__)
-    return
 
 
 def get_images(
@@ -67,8 +66,6 @@ def get_images(
             resolution=image_resolution,
         )
         time += goes.time_resolution
-
-    return
 
 
 if __name__ == "__main__":

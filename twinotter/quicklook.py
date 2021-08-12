@@ -34,8 +34,6 @@ def main():
         flight_segments_file=args.flight_segments_file,
     )
 
-    return
-
 
 def generate(flight_data_path, flight_segments_file):
     ds = load_flight(flight_data_path)

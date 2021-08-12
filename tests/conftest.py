@@ -32,8 +32,6 @@ def download_testdata():
 
     tarfile.open(fhtar.name, "r:gz").extractall(testdata_dir)
 
-    return
-
 
 def download_goes_testdata():
     with requests.get(GOES_TESTDATA_URL, stream=True) as r:
@@ -76,9 +74,7 @@ def testdata(scope="session"):
         flight_segments_file=str(
             testdata_dir / "EUREC4A_TO_Flight-Segments_20200124a_0.1.yaml"
         ),
-        flight_microphysics_file=str(
-            testdata_dir / "to330_ffssp_r1.nc"
-        ),
+        flight_microphysics_file=str(testdata_dir / "to330_ffssp_r1.nc"),
         goes_path=str(p_root / "goes"),
         goes_time=datetime.datetime(
             year=2020,

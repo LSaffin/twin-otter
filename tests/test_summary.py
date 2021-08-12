@@ -21,5 +21,3 @@ def test_summary(testdata):
         flight_data_path=testdata["flight_data_path"],
         flight_summary_path=flight_summary_path,
     )
-
-    return
