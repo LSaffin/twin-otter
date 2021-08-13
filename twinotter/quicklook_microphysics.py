@@ -6,7 +6,7 @@ Use the flight-segments .yaml produced from
 Usage::
 
     $ python -m twinotter.quicklook_microphysics
-        <flight_data_path> <flight_segments_file>
+        <masin_data_path> <microphysics_data_path> <flight_segments_file>
 
 """
 
@@ -26,20 +26,25 @@ def main():
     import argparse
 
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("flight_data_path")
+    argparser.add_argument("masin_data_path")
+    argparser.add_argument("microphysics_data_path")
     argparser.add_argument("flight_segments_file")
 
     args = argparser.parse_args()
 
     generate(
-        flight_data_path=args.flight_data_path,
+        masin_data_path=args.masin_data_path,
+        microphysics_data_path=args.microphysics_data_path,
         flight_segments_file=args.flight_segments_file,
     )
 
 
-def generate(flight_data_path, flight_segments_file):
+def generate(masin_data_path, microphysics_data_path, flight_segments_file):
+    print(masin_data_path)
+    ds_masin = xr.open_dataset(masin_data_path)
+
     filenames = list(
-        Path(flight_data_path).glob(
+        Path(microphysics_data_path).glob(
             MICROPHYSICS_FORMAT.format(flight_num="*", instrument="*", revision=1)
         )
     )
@@ -52,21 +57,23 @@ def generate(flight_data_path, flight_segments_file):
     flight_segments = load_segments(flight_segments_file)
 
     # Quicklook plots for the full flight
-    figures = plot_microphysics(datasets)
+    figures = plot_microphysics(ds_masin, datasets)
     for fig, figname in figures:
         fig.suptitle("{}: {}".format(flight_segments["flight_id"], figname))
     savefigs(figures, "{}_overview".format(flight_segments["flight_id"]))
 
-    plot_individual_phases(datasets, flight_segments, "level", plot_microphysics)
-    plot_individual_phases(datasets, flight_segments, "profile", plot_microphysics)
+    plot_individual_phases(ds_masin, datasets, flight_segments, "level", plot_microphysics)
+    plot_individual_phases(ds_masin, datasets, flight_segments, "profile", plot_microphysics)
 
     plot_with_phases(datasets, flight_segments, "cloud", plot_lwc_violin)
 
 
-def plot_individual_phases(datasets, flight_segments, segment_type, plot_func):
+def plot_individual_phases(ds_masin, datasets, flight_segments, segment_type, plot_func):
     segments = matching_segments(flight_segments, segment_type)
     for seg in segments:
         ds_sections = {}
+
+        ds_sub_masin = ds_masin.sel(Time=slice(seg["start"], seg["end"]))
         for instrument in datasets:
             ds = datasets[instrument]
             ds_sub = ds.sel(time=slice(seg["start"], seg["end"]))
@@ -74,7 +81,7 @@ def plot_individual_phases(datasets, flight_segments, segment_type, plot_func):
             if len(ds_sub.time) > 0:
                 ds_sections[instrument] = ds_sub
 
-        figures = plot_func(ds_sections)
+        figures = plot_func(ds_sub_masin, ds_sections)
         for fig, figname in figures:
             fig.suptitle(
                 "{}: {} {}".format(flight_segments["flight_id"], seg["name"], figname)
@@ -105,7 +112,7 @@ def plot_with_phases(datasets, flight_segments, segment_type, plot_func):
         plt.close()
 
 
-def plot_microphysics(datasets):
+def plot_microphysics(ds_masin, datasets):
     figures = []
 
     n_micro = len(datasets)
@@ -114,9 +121,8 @@ def plot_microphysics(datasets):
         nrows=n_micro + 1, ncols=1, sharex="all", figsize=[8, 2.5 * (n_micro + 1)]
     )
 
-    ds = datasets[list(datasets.keys())[0]]
-    axes[0].plot(ds.time, ds.altitude)
-    axes[0].set_ylabel("Altitude (m)")
+    axes[0].plot(ds_masin.Time, ds_masin.W_OXTS)
+    axes[0].set_ylabel("w (ms$^{-1}$)")
 
     for n, instrument in enumerate(datasets):
         ds = datasets[instrument]
